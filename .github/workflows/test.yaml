@@ -1,0 +1,107 @@
+name: CI (PR Test)
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      # Jest를 --coverage, --json으로 실행하여 결과를 JSON 파일로 뽑아냄
+      # 실패해도 다음 스텝(코멘트 작성)으로 이어지도록 `|| true` 처리
+      - name: Run tests with coverage (ESM)
+        run: node --experimental-vm-modules node_modules/.bin/jest --coverage --json --outputFile=jest-report.json || true
+
+      # JSON 결과 파싱 후, Pull Request에 코멘트로 달기
+      - name: Post test summary
+        uses: actions/github-script@v6
+        with:
+          secret: MY_GITHUB_TOKEN
+          script: |
+            const fs = require('fs');
+            const path = 'jest-report.json';
+
+            if (!fs.existsSync(path)) {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: 'Jest report file not found. Test might have crashed or not run properly.'
+              });
+              return;
+            }
+
+            const report = JSON.parse(fs.readFileSync(path, 'utf8'));
+            const {
+              numTotalTests,
+              numFailedTests,
+              numPassedTests,
+              numPendingTests,
+              testResults
+            } = report;
+
+            // 간단 요약
+            let summary = `
+            - **Total**: ${numTotalTests}
+            - **Passed**: ${numPassedTests}
+            - **Failed**: ${numFailedTests}
+            - **Pending**: ${numPendingTests}
+
+            <details>
+            <summary>테스트 상세 결과 보기</summary>
+
+            | Test File |   Status   | Passed | Failed | Runtime (ms) |
+            |:----------|:----------:|-------:|-------:|-------------:|
+            `;
+
+            testResults.forEach(result => {
+              // 파일 경로를 짧게 줄이거나, 이름만 쓰고 싶다면 아래에서 가공
+              const fileName = result.name.replace(process.cwd(), '');
+              const status = result.status;
+              const passedCount = result.assertionResults.filter(a => a.status === 'passed').length;
+              const failedCount = result.assertionResults.filter(a => a.status === 'failed').length;
+              const runtime = result.endTime - result.startTime;
+
+              // 이모지/굵게 활용
+              // (원하시는대로 PASS/FAIL 구분)
+              let displayStatus = status === 'passed'
+                ? '✅ **PASS**'
+                : '❌ **FAIL**';
+
+              summary += `| \`${fileName}\` | ${displayStatus} | ${passedCount} | ${failedCount} | ${runtime} |\n`;
+            });
+
+            summary += `
+            </details>
+            `;
+
+            const pat = core.getInput('MY_GITHUB_TOKEN');
+
+            // 직접 Octokit 인스턴스 생성
+            const { Octokit } = require('@octokit/rest');
+            const octokit = new Octokit({ auth: pat });
+
+            await octokit.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body: summary,
+            });
