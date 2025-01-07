@@ -57,7 +57,7 @@ jobs:
               numPendingTests,
             } = report;
 
-            const summary = `
+            let summary = `
             ### Jest Test Summary
             - **Total**: ${numTotalTests}
             - **Passed**: ${numPassedTests}
