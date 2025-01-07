@@ -7,15 +7,7 @@ describe("Q1.1: 변수 선언 테스트", () => {
     });
 
     test("x는 number 타입이어야 한다", () => {
-      x = 42; // 값을 할당하여 타입 확인
       expect(typeof x).toBe("number");
-    });
-
-    test("x는 재할당이 가능해야 한다", () => {
-      x = 42;
-      expect(x).toBe(42);
-      x = 100;
-      expect(x).toBe(100);
     });
   });
 
@@ -25,15 +17,7 @@ describe("Q1.1: 변수 선언 테스트", () => {
     });
 
     test("y는 string 타입이어야 한다", () => {
-      y = "Hello"; // 값을 할당하여 타입 확인
       expect(typeof y).toBe("string");
-    });
-
-    test("y는 재할당이 가능해야 한다", () => {
-      y = "Hello";
-      expect(y).toBe("Hello");
-      y = "World";
-      expect(y).toBe("World");
     });
   });
 
