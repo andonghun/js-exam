@@ -65,6 +65,21 @@ jobs:
             - **Pending**: ${numPendingTests}
             `;
 
+            summary += `| Test File | Status | Passed | Failed | Runtime (ms) |\n`;
+            summary += `|-----------|--------|--------|--------|--------------|\n`;
+
+            testResults.forEach(result => {
+              const fileName = result.name.replace(process.cwd(), '');
+              const status = result.status; 
+              
+              const passedCount = result.assertionResults.filter(a => a.status === 'passed').length;
+              const failedCount = result.assertionResults.filter(a => a.status === 'failed').length;
+              const runtime = result.endTime - result.startTime;
+
+              summary += `| \`${fileName}\` | ${status} | ${passedCount} | ${failedCount} | ${runtime} |\n`;
+            });
+
+
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
