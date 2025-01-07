@@ -34,7 +34,6 @@ jobs:
             const fs = require('fs');
             const path = 'jest-report.json';
 
-            // 혹시 테스트가 완전히 실패했거나 파일이 없을 수도 있으니 예외 처리
             if (!fs.existsSync(path)) {
               await github.rest.issues.createComment({
                 issue_number: context.issue.number,
@@ -55,14 +54,13 @@ jobs:
 
             // 코멘트로 달 내용 (Markdown)
             const summary = `
-### Jest Test Summary
-- **Total**: ${numTotalTests}
-- **Passed**: ${numPassedTests}
-- **Failed**: ${numFailedTests}
-- **Pending**: ${numPendingTests}
-`;
+      ### Jest Test Summary
+       **Total**: ${numTotalTests}
+       **Passed**: ${numPassedTests}
+       **Failed**: ${numFailedTests}
+       **Pending**: ${numPendingTests}
+            `;
 
-            // PR 코멘트 작성
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
