@@ -21,5 +21,51 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests
-        run: node --experimental-vm-modules node_modules/.bin/jest
+      # Jest를 --coverage, --json으로 실행하여 결과를 JSON 파일로 뽑아냄
+      # 실패해도 다음 스텝(코멘트 작성)으로 이어지도록 `|| true` 처리
+      - name: Run tests with coverage (ESM)
+        run: node --experimental-vm-modules node_modules/.bin/jest --coverage --json --outputFile=jest-report.json || true
+
+      # JSON 결과 파싱 후, Pull Request에 코멘트로 달기
+      - name: Post test summary
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'jest-report.json';
+
+            // 혹시 테스트가 완전히 실패했거나 파일이 없을 수도 있으니 예외 처리
+            if (!fs.existsSync(path)) {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: 'Jest report file not found. Test might have crashed or not run properly.'
+              });
+              return;
+            }
+
+            const report = JSON.parse(fs.readFileSync(path, 'utf8'));
+            const {
+              numTotalTests,
+              numFailedTests,
+              numPassedTests,
+              numPendingTests,
+            } = report;
+
+            // 코멘트로 달 내용 (Markdown)
+            const summary = `
+### Jest Test Summary
+- **Total**: ${numTotalTests}
+- **Passed**: ${numPassedTests}
+- **Failed**: ${numFailedTests}
+- **Pending**: ${numPendingTests}
+`;
+
+            // PR 코멘트 작성
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
