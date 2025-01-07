@@ -1,4 +1,4 @@
-import { x, y, z } from "../01.변수/Q1.1.js";
+import { x, y, z } from "../../part1/01.변수/Q1.1.js";
 
 describe("Q1.1: 변수 선언 테스트", () => {
   describe("변수 x 테스트 (var)", () => {

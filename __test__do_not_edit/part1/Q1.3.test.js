@@ -1,5 +1,5 @@
 // reassignConst.test.js
-import { reassignConst } from "../01.변수/Q1.3.js";
+import { reassignConst } from "../../part1/01.변수/Q1.3.js";
 describe("Q1.3: const 재할당", () => {
   it("const 변수를 재할당하려고 할 때 TypeError를 던져야 합니다", () => {
     expect(() => reassignConst()).toThrow(TypeError);

@@ -1,4 +1,12 @@
-import { num, str, bool, arr, obj, undef, nul } from "../01.변수/Q1.2.js";
+import {
+  num,
+  str,
+  bool,
+  arr,
+  obj,
+  undef,
+  nul,
+} from "../../part1/01.변수/Q1.2.js";
 
 describe("Q1.2 타입별 변수 테스트", () => {
   describe("num (number 타입)", () => {
