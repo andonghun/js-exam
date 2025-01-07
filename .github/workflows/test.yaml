@@ -55,6 +55,7 @@ jobs:
               numFailedTests,
               numPassedTests,
               numPendingTests,
+              testResults
             } = report;
 
             let summary = `
