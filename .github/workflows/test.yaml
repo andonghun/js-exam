@@ -58,28 +58,40 @@ jobs:
               testResults
             } = report;
 
+            // 간단 요약
             let summary = `
-            ### Jest Test Summary
             - **Total**: ${numTotalTests}
             - **Passed**: ${numPassedTests}
             - **Failed**: ${numFailedTests}
             - **Pending**: ${numPendingTests}
+
+            <details>
+            <summary>테스트 상세 결과 보기</summary>
+
+            | Test File |   Status   | Passed | Failed | Runtime (ms) |
+            |:----------|:----------:|-------:|-------:|-------------:|
             `;
 
-            summary += `| Test File | Status | Passed | Failed | Runtime (ms) |\n`;
-            summary += `|-----------|--------|--------|--------|--------------|\n`;
-
             testResults.forEach(result => {
+              // 파일 경로를 짧게 줄이거나, 이름만 쓰고 싶다면 아래에서 가공
               const fileName = result.name.replace(process.cwd(), '');
-              const status = result.status; 
-              
+              const status = result.status;
               const passedCount = result.assertionResults.filter(a => a.status === 'passed').length;
               const failedCount = result.assertionResults.filter(a => a.status === 'failed').length;
               const runtime = result.endTime - result.startTime;
 
-              summary += `| \`${fileName}\` | ${status} | ${passedCount} | ${failedCount} | ${runtime} |\n`;
+              // 이모지/굵게 활용
+              // (원하시는대로 PASS/FAIL 구분)
+              let displayStatus = status === 'passed'
+                ? '✅ **PASS**'
+                : '❌ **FAIL**';
+
+              summary += `| \`${fileName}\` | ${displayStatus} | ${passedCount} | ${failedCount} | ${runtime} |\n`;
             });
 
+            summary += `
+            </details>
+            `;
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,
