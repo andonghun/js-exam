@@ -34,11 +34,11 @@ jobs:
       - name: Post test summary
         uses: actions/github-script@v6
         with:
+          secret: MY_GITHUB_TOKEN
           script: |
             const fs = require('fs');
             const path = 'jest-report.json';
 
-            // 혹시 테스트가 완전히 실패했거나 파일이 없을 수도 있으니 예외 처리
             if (!fs.existsSync(path)) {
               await github.rest.issues.createComment({
                 issue_number: context.issue.number,
@@ -65,9 +65,12 @@ jobs:
             - **Pending**: ${numPendingTests}
             `;
 
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            const { Octokit } = require('@octokit/rest');
+            const octokit = new Octokit({ auth: core.getInput('MY_GITHUB_TOKEN') });
+
+            await octokit.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: summary
+              issue_number: context.issue.number,
+              body: summary,
             });
