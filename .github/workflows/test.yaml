@@ -5,6 +5,10 @@ on:
     branches: [main]
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -61,7 +65,6 @@ jobs:
             - **Pending**: ${numPendingTests}
             `;
 
-            // PR 코멘트 작성
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
