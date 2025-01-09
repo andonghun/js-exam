@@ -1,6 +1,19 @@
 export default {
   testEnvironment: "node",
 
+  reporters: [
+    "default",
+    [
+      "./node_modules/jest-html-reporter",
+      {
+        pageTitle: "문제 은행 테스트 결과",
+        outputPath: "./test-report.html",
+        includeFailureMsg: false,
+        includeSuiteFailure: false,
+      },
+    ],
+  ],
+
   moduleFileExtensions: ["js", "json", "jsx", "ts", "tsx", "json"],
   transform: {
     "^.+\\.(js|jsx)?$": "babel-jest",
