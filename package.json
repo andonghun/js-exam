@@ -6,8 +6,8 @@
     "prepare": "husky",
     "test": "node --experimental-vm-modules node_modules/.bin/jest --json --outputFile=test-results.json || true",
     "posttest": "node scripts/openTestReport.js",
-    "generateTestResult": "node --experimental-vm-modules node_modules/.bin/jest --json --outputFile=test-results.json || true",
-    "generateTestReport": "node scripts/generateTestReport.js"
+    "generateTestReport": "node scripts/generateTestReport.js",
+    "dashboard": "node scripts/generateDashboard.js"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@octokit/rest": "^21.1.0",
+    "dotenv": "^16.4.7",
     "jest-html-reporter": "^3.10.2"
   }
 }
