@@ -5,21 +5,20 @@ import path from "path";
 
 dotenv.config();
 
-// GitHub API 토큰이 없으면 에러 메시지 출력
+const octokit = new Octokit(
+  process.env.GITHUB_TOKEN
+    ? {
+        auth: process.env.GITHUB_TOKEN,
+      }
+    : {} // 토큰이 없는 경우 인증 없이 생성
+);
+
+// 경고 메시지 추가
 if (!process.env.GITHUB_TOKEN) {
-  console.error("Error: GITHUB_TOKEN is not set in .env file");
-  process.exit(1);
+  console.warn(
+    "Warning: GITHUB_TOKEN is not set. API rate limits will be restricted."
+  );
 }
-
-// 저장소 정보가 없으면 에러 메시지 출력
-if (!process.env.GITHUB_OWNER || !process.env.GITHUB_REPO) {
-  console.error("Error: GITHUB_OWNER or GITHUB_REPO is not set in .env file");
-  process.exit(1);
-}
-
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN,
-});
 
 const getTestResults = async (owner, repo, branch = "main") => {
   try {
@@ -116,8 +115,8 @@ const calculateTestDetails = (results) => {
 const getForks = async () => {
   try {
     const response = await octokit.rest.repos.listForks({
-      owner: process.env.GITHUB_OWNER,
-      repo: process.env.GITHUB_REPO,
+      owner: process.env.GITHUB_OWNER || "JaeSang1998",
+      repo: process.env.GITHUB_REPO || "js-exam",
     });
 
     const forks = response.data;
