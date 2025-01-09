@@ -55,7 +55,6 @@ const getForks = async () => {
       });
     }
 
-    console.log(JSON.stringify(results, null, 2));
     return results;
   } catch (error) {
     console.error("Error fetching forks:", error.message);
