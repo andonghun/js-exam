@@ -5,7 +5,8 @@
   "scripts": {
     "prepare": "husky",
     "test": "node --experimental-vm-modules node_modules/.bin/jest --json --outputFile=test-results.json || true",
-    "posttest": "node scripts/openTestReport.js"
+    "posttest": "node scripts/openTestReport.js",
+    "generateTestResult": "node --experimental-vm-modules node_modules/.bin/jest --json --outputFile=test-results.json || true"
   },
   "keywords": [],
   "author": "",
