@@ -6,7 +6,7 @@ export default {
     [
       "./node_modules/jest-html-reporter",
       {
-        pageTitle: "Test Report",
+        pageTitle: "문제 은행 테스트 결과",
         outputPath: "./test-report.html",
         includeFailureMsg: false,
         includeSuiteFailure: false,
