@@ -39,3 +39,8 @@ jspm_packages/
 
 # Coverage directory used by tools like istanbul
 coverage/
+
+# Test report
+test-report.html
+jest-html-reporters-attach/
+jest_html_reporters.html
