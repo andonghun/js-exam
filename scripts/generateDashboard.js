@@ -78,29 +78,7 @@ const generateDashboard = () => {
         <h1>문제 은행 테스트 결과</h1>
         <p>Last updated: ${new Date(stats.timestamp).toLocaleString()}</p>
         
-        <div class="user-section">
-            <h2>유저별 테스트 결과</h2>
-            ${stats.userResults
-              .map(
-                (user) => `
-                <div class="user-card">
-                    <img src="${user.avatarUrl}" alt="${user.user}">
-                    <div>
-                        <h3><a href="${user.githubUrl}" target="_blank">${
-                  user.user
-                }</a></h3>
-                        <p>Passed: ${user.stats.passedTests}/${
-                  user.stats.totalTests
-                } (${user.stats.percentage})</p>
-                        <p>Last Update: ${new Date(
-                          user.lastUpdate
-                        ).toLocaleString()}</p>
-                    </div>
-                </div>
-            `
-              )
-              .join("")}
-        </div>
+        
 
         <h2>문제별 테스트 결과</h2>
         <table>
@@ -127,6 +105,30 @@ const generateDashboard = () => {
                   .join("")}
             </tbody>
         </table>
+
+        <div class="user-section">
+            <h2>유저별 테스트 결과</h2>
+            ${stats.userResults
+              .map(
+                (user) => `
+                <div class="user-card">
+                    <img src="${user.avatarUrl}" alt="${user.user}">
+                    <div>
+                        <h3><a href="${user.githubUrl}" target="_blank">${
+                  user.user
+                }</a></h3>
+                        <p>Passed: ${user.stats.passedTests}/${
+                  user.stats.totalTests
+                } (${user.stats.percentage})</p>
+                        <p>Last Update: ${new Date(
+                          user.lastUpdate
+                        ).toLocaleString()}</p>
+                    </div>
+                </div>
+            `
+              )
+              .join("")}
+        </div>
 
         <div>
             <h2>요약</h2>
