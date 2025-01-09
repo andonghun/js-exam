@@ -6,8 +6,9 @@
     "prepare": "husky",
     "test": "node --experimental-vm-modules node_modules/.bin/jest --json --outputFile=test-results.json || true",
     "posttest": "node scripts/openTestReport.js",
-    "generateTestReport": "node scripts/generateTestReport.js",
-    "dashboard": "node scripts/generateDashboard.js"
+    "prepareTestReport": "node scripts/generateTestReport.js",
+    "generateDashboard": "node scripts/generateDashboard.js",
+    "dashboard": "npm run prepareTestReport && npm run generateDashboard"
   },
   "keywords": [],
   "author": "",
