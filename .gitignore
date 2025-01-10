@@ -46,3 +46,6 @@ jest-html-reporters-attach/
 jest_html_reporters.html
 
 reports/
+
+scripts/generateDashboard.js
+scripts/generateTestReport.js
